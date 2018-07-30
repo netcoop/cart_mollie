@@ -1,0 +1,68 @@
+plugin.tx_cartmollie {
+
+    settings {
+        testmode = 0
+        logPayments = 1
+
+        apiKey =
+        apiKeyTest =
+
+        currency_code = EUR
+
+        // path to the webhook, relative paths will be prepended with site domain
+        webhookUrl = ?eID=mollieWebhook
+
+        // path to page where Mollie redirects after payment, relative paths will be prepended with site domain
+        // if empty, Mollie will redirect to cart page with GP:tx_cart_cart|order = order_number, for
+        // use with lib.cart_mollie_confirmation
+        redirectUrl =
+
+        skipInvoice = 0
+        preventEmailToSender = 0
+        preventEmailToReceiver = 0
+
+    }
+}
+
+/*
+ *  Show confirmation message after Mollie payment redirect
+ *  Don't add this GET parameter (GP:tx_cart_cart|order) to realurl: the chash protects unauthorized visitors to see this
+*/
+lib.cart_mollie_confirmation = COA
+lib.cart_mollie_confirmation {
+
+    10 = FLUIDTEMPLATE
+    10 {
+        file = EXT:cart_mollie/Resources/Private/Templates/OrderConfirmation.html
+        variables {
+
+            // Check order status in DB, returns paid, pending, open or canceled
+            orderStatus = CONTENT
+            orderStatus {
+                table = tx_cart_domain_model_order_item
+                select {
+                    where {
+                        data = GP:tx_cart_cart|order
+                        intval = 1
+                        wrap = `order_number`=|
+                    }
+                    selectFields = payment
+                    pidInList = {$pages.orders}
+                }
+                renderObj = RECORDS
+                renderObj {
+                    tables = tx_cart_domain_model_order_payment
+                    source.field = payment
+                    conf.tx_cart_domain_model_order_payment = TEXT
+                    conf.tx_cart_domain_model_order_payment.field = status
+                }
+            }
+
+            order = TEXT
+            order {
+                data = GP:tx_cart_cart|order
+                intval = 1
+            }
+        }
+    }
+}

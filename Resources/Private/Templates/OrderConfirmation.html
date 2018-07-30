@@ -1,0 +1,34 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<div>
+    <f:switch expression="{orderStatus}">
+        <f:case value="paid">
+            <h3>Bedankt voor uw bestelling.</h3>
+            <p>Uw ordernummer is {order}. U ontvangt van ons een e-mail met de bestelde tickets.</p>
+            <p><i>(status: {orderStatus})</i></p>
+        </f:case>
+        <f:case value="canceled">
+            <p><f:translate key="LLL:EXT:cart/Resources/Private/Language/locallang.xlf:tx_cart.controller.order.action.payment_cancel.successfully_canceled" /></p>
+            <p><i>(status: {orderStatus})</i></p>
+        </f:case>
+        <f:case value="pending">
+            <h3><f:translate key="LLL:EXT:cart/Resources/Private/Language/locallang.xlf:tx_cart.controller.order.action.payment_success.thank_you" /></h3>
+            <p>Uw ordernummer is {order}. Wanneer uw betaling is verwerkt ontvangt u van ons een e-mail met de bestelde tickets.</p>
+            <p><i>(status: {orderStatus})</i></p>
+        </f:case>
+        <f:case value="open">
+            <h3><f:translate key="LLL:EXT:cart/Resources/Private/Language/locallang.xlf:tx_cart.controller.order.action.payment_success.thank_you" /></h3>
+            <p>Uw ordernummer is {order}. Wanneer u de betaling voltooid heeft ontvangt u van ons een e-mail met de bestelde tickets.</p>
+            <p><i>(status: {orderStatus})</i></p>
+        </f:case>
+        <f:defaultCase>
+            <h3><f:translate key="LLL:EXT:cart/Resources/Private/Language/locallang.xlf:tx_cart.controller.order.action.payment_success.thank_you" /></h3>
+            <p>Uw ordernummer is {order}. Er is iets misgegaan, de status van uw bestelling kan op dit moment niet worden vastgesteld.</p>
+            <p><i>(status:
+                <f:if condition="{orderStatus}">
+                    <f:then>{orderStatus}</f:then>
+                    <f:else>onbekend</f:else>
+                </f:if>)
+            </i></p>
+        </f:defaultCase>
+    </f:switch>
+</div>

@@ -1,0 +1,4 @@
+pages {
+    shop = 7
+    orders = 9
+}
